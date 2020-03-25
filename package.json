@@ -7,7 +7,7 @@
   "unpkg": "dist/foo.umd.js",
   "license": "MIT",
   "scripts": {
-    "build": "parcel build src/index.js"
+    "build": "microbundle"
   },
   "dependencies": {
     "preact": "^10.3.4",
