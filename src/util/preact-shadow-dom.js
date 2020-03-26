@@ -1,26 +1,51 @@
-import { Component, h, render, unmountComponentAtNode } from 'preact';
+import { h, render } from 'preact';
+import { useRef, useEffect } from 'preact/hooks';
 
-export default function ShadowDOM(ComponentClass, CSSString) {
-  class ShadowDOMComponentClass extends Component {
-    setup(node) {
-      if (!node) {
-        console.warn(
-          `ShadowDOM failed to create shadow dom for ${ComponentClass.displayName ||
-            'component'}, because node was falsy.`
-        );
-        return;
+// based on https://github.com/developit/preact-shadow-dom
+// shadowRoot swallowing events
+export function ShadowDOM(ComponentClass, CSSString) {
+  const ShadowDOMComponent = props => {
+    const shadowRoot = useRef(null);
+
+    useEffect(() => {
+      if (shadowRoot) {
+        const shadow = shadowRoot.current.attachShadow({ mode: 'open' });
+        render(<ComponentClass {...props} />, shadow);
+        shadow.innerHTML += `<style>${CSSString}</style>`;
       }
+    }, [shadowRoot]);
 
-      this.shadow = node.attachShadow({ mode: 'open' });
-      this._component = render(<ComponentClass {...this.props} />, this.shadow);
-      this.shadow.innerHTML += `<style>${CSSString}</style>`;
-    }
+    return <div ref={shadowRoot}></div>;
+  };
 
-    render() {
-      return <div ref={this.setup.bind(this)} />;
+  return ShadowDOMComponent;
+}
+
+// based on https://github.com/developit/preact-shadow-root
+export class Shadow {
+  shouldComponentUpdate(nextProps) {
+    this.update(nextProps);
+    return false;
+  }
+  componentDidMount() {
+    let parent = this.base && this.base.parentNode;
+    if (parent) {
+      this.shadow = parent.attachShadow({ mode: 'open' });
+      this.update(this.props);
     }
   }
-  ShadowDOMComponentClass.displayName = `ShadowDOM(${ComponentClass.displayName})`;
-
-  return ShadowDOMComponentClass;
+  componentWillUnmount() {
+    this.update(this.props, true);
+  }
+  update(props, unrender) {
+    let child = props.children;
+    let replace;
+    if (child && child[0] && 'nodeName' in child[0]) {
+      child = child[0];
+      replace = this.shadow.firstChild;
+    }
+    let root = render(unrender ? null : child, this.shadow, replace);
+    if (unrender && root) root.remove();
+  }
+  render() {}
 }

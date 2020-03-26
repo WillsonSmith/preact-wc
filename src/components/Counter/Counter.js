@@ -1,16 +1,28 @@
 import { h } from 'preact';
 import { useState } from 'preact/hooks';
-import ShadowDOM from '../../util/preact-shadow-dom';
+import { ShadowDOM, Shadow } from '../../util/preact-shadow-dom';
+// import styles from './styles.css';
 
-import styles from './styles.css';
+const styles = `
+:host {
+  --spacing: 1.6rem;
+}
+
+.Wrapper {
+  padding: var(--spacing);
+}
+`;
 
 export const Counter = ShadowDOM(() => {
   const [count, setCount] = useState(0);
+  const update = value => {
+    setCount(value);
+  };
 
   return (
     <div class="Wrapper">
       <div>Count: {count}</div>
-      <button onClick={() => setCount(count + 1)}>Increment</button>
+      <button onClick={() => update(count + 1)}>Increment</button>
     </div>
   );
 }, styles);
