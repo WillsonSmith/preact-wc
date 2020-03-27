@@ -5,6 +5,7 @@ import { useRef, useEffect } from 'preact/hooks';
 // shadowRoot swallowing events
 export function ShadowDOM(ComponentClass, CSSString) {
   const ShadowDOMComponent = props => {
+    console.log(ComponentClass);
     const shadowRoot = useRef(null);
 
     useEffect(() => {
@@ -13,7 +14,7 @@ export function ShadowDOM(ComponentClass, CSSString) {
         render(<ComponentClass {...props} />, shadow);
         shadow.innerHTML += `<style>${CSSString}</style>`;
       }
-    }, [shadowRoot]);
+    }, [shadowRoot, props]);
 
     return <div ref={shadowRoot}></div>;
   };

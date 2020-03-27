@@ -13,7 +13,7 @@ const styles = `
 }
 `;
 
-export const Counter = ShadowDOM(() => {
+export const Counter = () => {
   const [count, setCount] = useState(0);
   const update = value => {
     setCount(value);
@@ -25,4 +25,7 @@ export const Counter = ShadowDOM(() => {
       <button onClick={() => update(count + 1)}>Increment</button>
     </div>
   );
-}, styles);
+};
+
+//shadow dom breaks component, i think events get lost
+export const ShadowCounter = ShadowDOM(Counter, styles);
