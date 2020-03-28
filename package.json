@@ -8,7 +8,8 @@
   "license": "MIT",
   "scripts": {
     "build": "microbundle",
-    "watch": "microbundle watch"
+    "watch": "microbundle watch",
+    "demo": "parcel serve demo/index.html"
   },
   "dependencies": {
     "preact": "^10.3.4",
@@ -17,6 +18,8 @@
     "preact-shadow-root": "^1.0.2"
   },
   "devDependencies": {
-    "microbundle": "^0.12.0-next.8"
+    "@babel/core": "^7.0.0",
+    "microbundle": "^0.12.0-next.8",
+    "parcel": "^2.0.0-alpha.3.2"
   }
 }
